@@ -2,6 +2,7 @@ using System.Collections;
 using DefaultNamespace;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Rock : MonoBehaviour, IInteractable
 {
@@ -13,27 +14,34 @@ public class Rock : MonoBehaviour, IInteractable
 
     public GameObject winObject;
 
-    public Transform TeleportLocation;
+    public Transform teleportLocation;
 
     private bool progress;
     public void Interact()
     {
         if (progress)
         {
-            winObject.SetActive(true);
+            StartCoroutine(ExampleCoroutine(winObject));
+            StartCoroutine(RestartSceneCoroutine());
             return;
         }
-        Debug.Log(1);
+        StartCoroutine(ExampleCoroutine(speechObject));
         progress = true;
-        StartCoroutine(ExampleCoroutine());
+        transform.position = teleportLocation.position;
     }
 
 
-    IEnumerator ExampleCoroutine()
+    private IEnumerator ExampleCoroutine(GameObject gameObject)
     {
-        transform.position = TeleportLocation.position;
-        speechObject.SetActive(true);
+        gameObject.SetActive(true);
         yield return new WaitForSeconds(5);
-        speechObject.SetActive(false);
+        gameObject.SetActive(false);
+
+    }
+
+    private IEnumerator RestartSceneCoroutine()
+    {
+        yield return new WaitForSeconds(5);
+        SceneManager.LoadScene(0);
     }
 }
